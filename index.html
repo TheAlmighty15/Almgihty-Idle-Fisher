@@ -187,31 +187,10 @@
     border-radius: 10px;
     border: 3px solid var(--brown-border);
     box-shadow: 0 4px 20px var(--shadow);
-    background: linear-gradient(180deg,
-      #87CEEB 0%, #a8d8f0 35%,
-      #5a9e3a 55%, #4a8a2a 58%,
-      #3a6a1e 60%, #2a5010 62%,
-      #6b8a4e 62%, #8aaa6e 65%,
-      #4a7a5a 68%, #3d6b7a 72%,
-      #2a5a6a 80%, #1a3a5a 100%
-    );
+    background: url('pond.PNG') center center / cover no-repeat;
   }
 
-  /* Clouds */
-  .cloud {
-    position: absolute;
-    background: rgba(255,255,255,0.9);
-    border-radius: 50px;
-    animation: driftCloud linear infinite;
-  }
-  .cloud::before, .cloud::after { content:''; position:absolute; background:rgba(255,255,255,0.9); border-radius:50%; }
-  .cl1 { width:70px;height:22px;top:8%;left:-80px;animation-duration:50s;animation-delay:-10s; }
-  .cl1::before{width:36px;height:36px;top:-16px;left:10px;}
-  .cl1::after{width:26px;height:26px;top:-10px;left:34px;}
-  .cl2 { width:50px;height:16px;top:14%;left:-60px;animation-duration:70s;animation-delay:-40s; }
-  .cl2::before{width:28px;height:28px;top:-12px;left:8px;}
-  .cl2::after{width:20px;height:20px;top:-8px;left:26px;}
-  @keyframes driftCloud { from{transform:translateX(0)} to{transform:translateX(calc(100vw + 200px))} }
+
 
   /* Rod in scene */
   #scene-rod {
@@ -692,8 +671,6 @@
 
   <!-- Scene -->
   <div id="scene">
-    <div class="cloud cl1"></div>
-    <div class="cloud cl2"></div>
     <div id="scene-rod">
       <div id="scene-line"></div>
     </div>
