@@ -74,8 +74,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 52px; height: 52px;
-    background: linear-gradient(135deg, #1a3a6e 0%, #0d2248 100%);
+    width: 54px; height: 54px;
+    background: url('https://raw.githubusercontent.com/TheAlmighty15/Almgihty-Idle-Fisher/main/level-badge.PNG') center/contain no-repeat,
+                linear-gradient(135deg, #1a3a6e 0%, #0d2248 100%);
     border: 3px solid var(--gold);
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     flex-shrink: 0;
@@ -117,7 +118,8 @@
     display: flex;
     align-items: center;
     gap: 5px;
-    background: linear-gradient(135deg, #3a2008 0%, #2c1a08 100%);
+    background: url('https://raw.githubusercontent.com/TheAlmighty15/Almgihty-Idle-Fisher/main/gold-bar.PNG') center/cover no-repeat,
+                linear-gradient(135deg, #3a2008 0%, #2c1a08 100%);
     border: 2px solid var(--gold-dark);
     border-radius: 20px;
     padding: 5px 12px;
@@ -144,11 +146,11 @@
     text-shadow: 0 0 30px rgba(245,200,66,0.9), 0 2px 8px rgba(0,0,0,0.8);
   }
 
-  /* LOCATION SIGN */
   #location-sign {
     flex-shrink: 0;
     margin: 10px 16px 0;
-    background: linear-gradient(180deg, #3d2008 0%, #2c1608 100%);
+    background: url('https://raw.githubusercontent.com/TheAlmighty15/Almgihty-Idle-Fisher/main/sign.PNG') center/100% 100% no-repeat,
+                linear-gradient(180deg, #3d2008 0%, #2c1608 100%);
     border: 3px solid var(--brown-border);
     border-radius: 8px;
     padding: 8px 14px 10px;
@@ -274,7 +276,8 @@
   /* DOCK AREA */
   #dock-area {
     flex-shrink: 0;
-    background: linear-gradient(180deg, #4a3010 0%, #3a2008 100%);
+    background: url('https://raw.githubusercontent.com/TheAlmighty15/Almgihty-Idle-Fisher/main/dock.PNG') center/100% 100% no-repeat,
+                linear-gradient(180deg, #4a3010 0%, #3a2008 100%);
     border-top: 3px solid var(--brown-border);
     padding: 10px 14px;
     display: flex;
@@ -284,7 +287,8 @@
 
   /* Bait card */
   .dock-card {
-    background: linear-gradient(180deg, var(--parchment) 0%, var(--parchment2) 100%);
+    background: url('https://raw.githubusercontent.com/TheAlmighty15/Almgihty-Idle-Fisher/main/bait-card.PNG') center/100% 100% no-repeat,
+                linear-gradient(180deg, var(--parchment) 0%, var(--parchment2) 100%);
     border: 2.5px solid var(--brown-border);
     border-radius: 10px;
     padding: 6px 8px;
@@ -295,6 +299,10 @@
     box-shadow: 0 3px 8px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.4);
     user-select: none;
   }
+  #card-autofisher {
+    background-image: url('https://raw.githubusercontent.com/TheAlmighty15/Almgihty-Idle-Fisher/main/autofisher-card.PNG'),
+                      linear-gradient(180deg, var(--parchment) 0%, var(--parchment2) 100%);
+  }
   .dock-card:active { transform: scale(0.95); }
   .dock-card .card-title { font-size: 10px; font-weight: 800; color: var(--text-mid); letter-spacing: 0.5px; margin-bottom: 3px; text-transform: uppercase; }
   .dock-card .card-icon  { font-size: 26px; line-height: 1.1; }
@@ -304,7 +312,8 @@
   #btn-gofish {
     flex: 1;
     height: 70px;
-    background: linear-gradient(180deg, var(--green-light) 0%, var(--green-btn) 40%, var(--green-btn2) 100%);
+    background: url('https://raw.githubusercontent.com/TheAlmighty15/Almgihty-Idle-Fisher/main/btn-gofish.PNG') center/100% 100% no-repeat,
+                linear-gradient(180deg, var(--green-light) 0%, var(--green-btn) 40%, var(--green-btn2) 100%);
     border: 3px solid #1a4a08;
     border-radius: 14px;
     box-shadow: 0 6px 0 #0d2a04, 0 8px 16px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.2);
@@ -376,8 +385,10 @@
   #bottom-nav {
     flex-shrink: 0;
     display: flex;
-    background: linear-gradient(180deg, #2c1a0e 0%, #1a0e05 100%);
+    background: url('https://raw.githubusercontent.com/TheAlmighty15/Almgihty-Idle-Fisher/main/nav-bar.PNG') center/100% 100% no-repeat,
+                linear-gradient(180deg, #2c1a0e 0%, #1a0e05 100%);
     border-top: 2px solid var(--brown-border);
+    min-height: 72px;
   }
   .nav-btn {
     flex: 1;
