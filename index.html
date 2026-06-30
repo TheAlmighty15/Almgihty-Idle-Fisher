@@ -903,8 +903,8 @@
 <script>
 // ════════════════════════════════════════
 //  FISH DEFINITIONS
-//  Each fish carries its own data. catchWeight = odds with Rod Lv1.
-//  catchWeightRod2 = odds once Rod Level 2 is purchased.
+//  Each fish carries its own data. catchWeightByBait = odds depending on
+//  which bait is active (different baits favor different fish slightly).
 // ════════════════════════════════════════
 const FISH = {
   minnow: {
@@ -913,8 +913,7 @@ const FISH = {
     icon: '🐟',
     xp: 1,
     value: 1,           // $ per fish — edit this to rebalance
-    catchWeight: 50,     // relative weight for RNG at Rod Lv1
-    catchWeightRod2: 20, // relative weight for RNG at Rod Lv2
+    catchWeightByBait: { corn: 50, worm: 25 },
   },
   bluegill: {
     id: 'bluegill',
@@ -922,8 +921,7 @@ const FISH = {
     icon: '🐠',
     xp: 2,
     value: 1,
-    catchWeight: 25,
-    catchWeightRod2: 25,
+    catchWeightByBait: { corn: 25, worm: 25 },
   },
   crappie: {
     id: 'crappie',
@@ -931,8 +929,7 @@ const FISH = {
     icon: '🐡',
     xp: 3,
     value: 2,
-    catchWeight: 15,
-    catchWeightRod2: 25,
+    catchWeightByBait: { corn: 15, worm: 25 },
   },
   bass: {
     id: 'bass',
@@ -940,8 +937,7 @@ const FISH = {
     icon: '🐋', // placeholder icon — swap if you'd like something more bass-like
     xp: 5,
     value: 4,
-    catchWeight: 7,
-    catchWeightRod2: 20,
+    catchWeightByBait: { corn: 7, worm: 15 },
   },
   catfish: {
     id: 'catfish',
@@ -949,18 +945,20 @@ const FISH = {
     icon: '🐟',
     xp: 8,
     value: 7,
-    catchWeight: 3,
-    catchWeightRod2: 10,
+    catchWeightByBait: { corn: 3, worm: 10 },
   },
 };
 
-// Build weighted pool based on current rod level. Rebuilt whenever rod is upgraded.
+// Build weighted pool based on the currently active bait. Rebuilt whenever
+// the active bait changes.
 let FISH_POOL = [];
 function buildFishPool() {
   FISH_POOL = [];
-  const useRod2 = state.rodLevel >= 2;
+  const baitId = state.activeBait;
   Object.values(FISH).forEach(f => {
-    const w = useRod2 ? f.catchWeightRod2 : f.catchWeight;
+    const w = (f.catchWeightByBait && f.catchWeightByBait[baitId] != null)
+      ? f.catchWeightByBait[baitId]
+      : f.catchWeightByBait.corn; // fallback
     for (let i = 0; i < w; i++) FISH_POOL.push(f.id);
   });
 }
@@ -994,6 +992,7 @@ const BAITS = {
 // ════════════════════════════════════════
 const ROD_LEVEL2_COST  = 100;
 const REEL_LEVEL2_COST = 150;
+const ROD2_DOUBLE_CATCH_CHANCE = 0.10; // 10% chance to catch 2 fish using 1 bait at Rod Lv2
 const CAST_DURATION_BASE = 3000; // ms, Reel Lv1
 const CAST_DURATION_REEL2 = 2500; // ms, Reel Lv2 (0.5s faster)
 const BAIT_MAX = 100; // max held of any single bait
@@ -1159,11 +1158,25 @@ function goFish() {
 
 function finishCast() {
   const fish = rollFish();
-  const added = addToInventory(fish.id);
+  const caughtFish = [fish];
 
-  if (added) {
-    grantXP(fish.xp);
-    showCatchPopup(fish);
+  // Rod Level 2: 10% chance to catch a 2nd fish using the same 1 bait.
+  // Both rolls draw from the same weighted pool (duplicates are possible).
+  if (state.rodLevel >= 2 && Math.random() < ROD2_DOUBLE_CATCH_CHANCE) {
+    const bonusFish = rollFish();
+    caughtFish.push(bonusFish);
+  }
+
+  const actuallyCaught = [];
+  caughtFish.forEach(f => {
+    if (addToInventory(f.id)) {
+      grantXP(f.xp);
+      actuallyCaught.push(f);
+    }
+  });
+
+  if (actuallyCaught.length > 0) {
+    showCatchPopup(actuallyCaught);
   }
 
   // Reset button
@@ -1183,9 +1196,14 @@ function rollFish() {
   return FISH[FISH_POOL[idx]];
 }
 
-function showCatchPopup(fish) {
+function showCatchPopup(fishList) {
   const el = document.getElementById('catch-popup');
-  el.textContent = `${fish.icon} ${fish.name} caught!`;
+  if (fishList.length === 1) {
+    el.textContent = `${fishList[0].icon} ${fishList[0].name} caught!`;
+  } else {
+    const names = fishList.map(f => `${f.icon} ${f.name}`).join(' + ');
+    el.textContent = `🎉 Double catch! ${names}`;
+  }
   el.classList.add('show');
   setTimeout(() => el.classList.remove('show'), 2000);
 }
@@ -1474,7 +1492,7 @@ function renderRodsScreen() {
         <span class="shop-item-icon">🎣</span>
         <div class="shop-item-info">
           <div class="shop-item-name">Rod Level 2</div>
-          <div class="shop-item-desc">Improves your odds at catching better fish.</div>
+          <div class="shop-item-desc">10% chance to catch 2 fish using only 1 bait.</div>
         </div>
       </div>
       <div class="upgrade-owned">✅ Owned</div>
@@ -1486,7 +1504,7 @@ function renderRodsScreen() {
         <span class="shop-item-icon">🎣</span>
         <div class="shop-item-info">
           <div class="shop-item-name">Rod Level 2</div>
-          <div class="shop-item-desc">Improves your odds at catching better fish.</div>
+          <div class="shop-item-desc">10% chance to catch 2 fish using only 1 bait.</div>
         </div>
       </div>
       <button class="upgrade-btn" id="buy-rod2" ${canAfford ? '' : 'disabled'}>Buy — $${ROD_LEVEL2_COST}</button>
@@ -1503,7 +1521,6 @@ function buyRodLevel2() {
   if (state.gold < ROD_LEVEL2_COST) return;
   state.gold -= ROD_LEVEL2_COST;
   state.rodLevel = 2;
-  buildFishPool();
   saveGame();
   updateAllUI();
   renderRodsScreen();
@@ -1585,7 +1602,7 @@ function renderBaitScreen() {
         ${isSelected ? '<span class="bs-selected">✅</span>' : ''}
       `;
       if (!isEmpty) {
-        div.onclick = () => { state.activeBait = id; saveGame(); renderBaitScreen(); updateBaitCard(); };
+        div.onclick = () => { state.activeBait = id; buildFishPool(); saveGame(); renderBaitScreen(); updateBaitCard(); };
       } else {
         div.style.cursor = 'default';
       }
