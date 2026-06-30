@@ -74,9 +74,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 54px; height: 54px;
-    background: url('https://raw.githubusercontent.com/TheAlmighty15/Almgihty-Idle-Fisher/main/level-badge.PNG') center/contain no-repeat,
-                linear-gradient(135deg, #1a3a6e 0%, #0d2248 100%);
+    width: 52px; height: 52px;
+    background: linear-gradient(135deg, #1a3a6e 0%, #0d2248 100%);
     border: 3px solid var(--gold);
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     flex-shrink: 0;
@@ -118,8 +117,7 @@
     display: flex;
     align-items: center;
     gap: 5px;
-    background: url('https://raw.githubusercontent.com/TheAlmighty15/Almgihty-Idle-Fisher/main/gold-bar.PNG') center/cover no-repeat,
-                linear-gradient(135deg, #3a2008 0%, #2c1a08 100%);
+    background: linear-gradient(135deg, #3a2008 0%, #2c1a08 100%);
     border: 2px solid var(--gold-dark);
     border-radius: 20px;
     padding: 5px 12px;
@@ -146,11 +144,11 @@
     text-shadow: 0 0 30px rgba(245,200,66,0.9), 0 2px 8px rgba(0,0,0,0.8);
   }
 
+  /* LOCATION SIGN */
   #location-sign {
     flex-shrink: 0;
     margin: 10px 16px 0;
-    background: url('https://raw.githubusercontent.com/TheAlmighty15/Almgihty-Idle-Fisher/main/sign.PNG') center/100% 100% no-repeat,
-                linear-gradient(180deg, #3d2008 0%, #2c1608 100%);
+    background: linear-gradient(180deg, #3d2008 0%, #2c1608 100%);
     border: 3px solid var(--brown-border);
     border-radius: 8px;
     padding: 8px 14px 10px;
@@ -189,10 +187,31 @@
     border-radius: 10px;
     border: 3px solid var(--brown-border);
     box-shadow: 0 4px 20px var(--shadow);
-    background: url('https://raw.githubusercontent.com/TheAlmighty15/Almgihty-Idle-Fisher/main/pond.PNG') center center / cover no-repeat;
+    background: linear-gradient(180deg,
+      #87CEEB 0%, #a8d8f0 35%,
+      #5a9e3a 55%, #4a8a2a 58%,
+      #3a6a1e 60%, #2a5010 62%,
+      #6b8a4e 62%, #8aaa6e 65%,
+      #4a7a5a 68%, #3d6b7a 72%,
+      #2a5a6a 80%, #1a3a5a 100%
+    );
   }
 
-
+  /* Clouds */
+  .cloud {
+    position: absolute;
+    background: rgba(255,255,255,0.9);
+    border-radius: 50px;
+    animation: driftCloud linear infinite;
+  }
+  .cloud::before, .cloud::after { content:''; position:absolute; background:rgba(255,255,255,0.9); border-radius:50%; }
+  .cl1 { width:70px;height:22px;top:8%;left:-80px;animation-duration:50s;animation-delay:-10s; }
+  .cl1::before{width:36px;height:36px;top:-16px;left:10px;}
+  .cl1::after{width:26px;height:26px;top:-10px;left:34px;}
+  .cl2 { width:50px;height:16px;top:14%;left:-60px;animation-duration:70s;animation-delay:-40s; }
+  .cl2::before{width:28px;height:28px;top:-12px;left:8px;}
+  .cl2::after{width:20px;height:20px;top:-8px;left:26px;}
+  @keyframes driftCloud { from{transform:translateX(0)} to{transform:translateX(calc(100vw + 200px))} }
 
   /* Rod in scene */
   #scene-rod {
@@ -276,8 +295,7 @@
   /* DOCK AREA */
   #dock-area {
     flex-shrink: 0;
-    background: url('https://raw.githubusercontent.com/TheAlmighty15/Almgihty-Idle-Fisher/main/dock.PNG') center/100% 100% no-repeat,
-                linear-gradient(180deg, #4a3010 0%, #3a2008 100%);
+    background: linear-gradient(180deg, #4a3010 0%, #3a2008 100%);
     border-top: 3px solid var(--brown-border);
     padding: 10px 14px;
     display: flex;
@@ -287,8 +305,7 @@
 
   /* Bait card */
   .dock-card {
-    background: url('https://raw.githubusercontent.com/TheAlmighty15/Almgihty-Idle-Fisher/main/bait-card.PNG') center/100% 100% no-repeat,
-                linear-gradient(180deg, var(--parchment) 0%, var(--parchment2) 100%);
+    background: linear-gradient(180deg, var(--parchment) 0%, var(--parchment2) 100%);
     border: 2.5px solid var(--brown-border);
     border-radius: 10px;
     padding: 6px 8px;
@@ -299,10 +316,6 @@
     box-shadow: 0 3px 8px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.4);
     user-select: none;
   }
-  #card-autofisher {
-    background-image: url('https://raw.githubusercontent.com/TheAlmighty15/Almgihty-Idle-Fisher/main/autofisher-card.PNG'),
-                      linear-gradient(180deg, var(--parchment) 0%, var(--parchment2) 100%);
-  }
   .dock-card:active { transform: scale(0.95); }
   .dock-card .card-title { font-size: 10px; font-weight: 800; color: var(--text-mid); letter-spacing: 0.5px; margin-bottom: 3px; text-transform: uppercase; }
   .dock-card .card-icon  { font-size: 26px; line-height: 1.1; }
@@ -312,8 +325,7 @@
   #btn-gofish {
     flex: 1;
     height: 70px;
-    background: url('https://raw.githubusercontent.com/TheAlmighty15/Almgihty-Idle-Fisher/main/btn-gofish.PNG') center/100% 100% no-repeat,
-                linear-gradient(180deg, var(--green-light) 0%, var(--green-btn) 40%, var(--green-btn2) 100%);
+    background: linear-gradient(180deg, var(--green-light) 0%, var(--green-btn) 40%, var(--green-btn2) 100%);
     border: 3px solid #1a4a08;
     border-radius: 14px;
     box-shadow: 0 6px 0 #0d2a04, 0 8px 16px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.2);
@@ -385,10 +397,8 @@
   #bottom-nav {
     flex-shrink: 0;
     display: flex;
-    background: url('https://raw.githubusercontent.com/TheAlmighty15/Almgihty-Idle-Fisher/main/nav-bar.PNG') center/100% 100% no-repeat,
-                linear-gradient(180deg, #2c1a0e 0%, #1a0e05 100%);
+    background: linear-gradient(180deg, #2c1a0e 0%, #1a0e05 100%);
     border-top: 2px solid var(--brown-border);
-    min-height: 72px;
   }
   .nav-btn {
     flex: 1;
@@ -612,6 +622,95 @@
   }
 
   /* ══════════════════════════════
+     MARKET / RODS / REELS SCREENS
+  ══════════════════════════════ */
+  #screen-market, #screen-rods, #screen-reels {
+    background: linear-gradient(180deg, #2c1a0e 0%, #1a0e05 100%);
+  }
+  #market-list, #rods-list, #reels-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .shop-item {
+    background: linear-gradient(180deg, var(--parchment) 0%, var(--parchment2) 100%);
+    border: 2.5px solid var(--brown-border);
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.4), 0 3px 8px var(--shadow);
+  }
+  .shop-item-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .shop-item-icon { font-size: 30px; }
+  .shop-item-info { flex: 1; }
+  .shop-item-name { font-weight: 800; font-size: 15px; color: var(--text-mid); }
+  .shop-item-desc { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+  .shop-item-count { font-size: 13px; font-weight: 700; color: var(--brown-mid); white-space: nowrap; }
+  .shop-item-buybar {
+    display: flex;
+    gap: 8px;
+  }
+  .buy-btn {
+    flex: 1;
+    padding: 10px 4px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    border-radius: 8px;
+    border: 2px solid #1a4a08;
+    background: linear-gradient(180deg, var(--green-light) 0%, var(--green-btn) 100%);
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 3px 0 #0d2a04;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .buy-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #0d2a04; }
+  .buy-btn:disabled {
+    background: linear-gradient(180deg, #888 0%, #666 100%);
+    border-color: #444;
+    box-shadow: 0 3px 0 #333;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  .upgrade-btn {
+    width: 100%;
+    padding: 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    border-radius: 10px;
+    border: 2px solid #8a6a08;
+    background: linear-gradient(180deg, var(--gold) 0%, var(--gold-dark) 100%);
+    color: var(--brown-dark);
+    cursor: pointer;
+    box-shadow: 0 4px 0 #7a5a04;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .upgrade-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #7a5a04; }
+  .upgrade-btn:disabled {
+    background: linear-gradient(180deg, #888 0%, #666 100%);
+    border-color: #444;
+    color: #ccc;
+    box-shadow: 0 4px 0 #333;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+  .upgrade-owned {
+    text-align: center;
+    font-weight: 800;
+    color: var(--green-btn);
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  /* ══════════════════════════════
      SETTINGS SCREEN
   ══════════════════════════════ */
   #screen-settings {
@@ -682,6 +781,8 @@
 
   <!-- Scene -->
   <div id="scene">
+    <div class="cloud cl1"></div>
+    <div class="cloud cl2"></div>
     <div id="scene-rod">
       <div id="scene-line"></div>
     </div>
@@ -694,8 +795,8 @@
     <!-- Bait Card -->
     <div class="dock-card" id="card-bait" onclick="openBait()">
       <div class="card-title">BAIT</div>
-      <div class="card-icon" id="bait-icon">🪱</div>
-      <div class="card-count" id="bait-count">∞</div>
+      <div class="card-icon" id="bait-icon">🌽</div>
+      <div class="card-count" id="bait-count">10</div>
     </div>
 
     <!-- GO FISH Button -->
@@ -738,7 +839,7 @@
 <!-- ══ BAIT OVERLAY ══ -->
 <div id="screen-bait" class="screen" onclick="closeBait(event)">
   <div id="bait-panel">
-    <h2>🪱 Select Bait</h2>
+    <h2>🎣 Select Bait</h2>
     <div class="bait-slots" id="bait-slots-list"></div>
     <button id="bait-close" onclick="showScreen('main')">Close</button>
   </div>
@@ -758,8 +859,38 @@
 <div id="screen-tackle" class="screen">
   <button class="close-btn" onclick="showScreen('main')">✕</button>
   <button class="shop-btn" id="btn-sellall" onclick="sellAll()">💰 Sell All</button>
-  <button class="shop-btn" id="btn-market" onclick="openMarket()">🛒 Market</button>
+  <button class="shop-btn" id="btn-market" onclick="showScreen('market')">🛒 Market</button>
+  <button class="shop-btn" id="btn-rods" onclick="showScreen('rods')">🎣 Rods</button>
+  <button class="shop-btn" id="btn-reels" onclick="showScreen('reels')">🌀 Reels</button>
   <div id="sell-result"></div>
+</div>
+
+<!-- ══ MARKET SCREEN ══ -->
+<div id="screen-market" class="screen">
+  <div class="sub-header">
+    <h2>🛒 Market</h2>
+    <button class="close-btn" onclick="showScreen('tackle')">✕</button>
+  </div>
+  <div id="market-list"></div>
+  <div id="market-result"></div>
+</div>
+
+<!-- ══ RODS SCREEN ══ -->
+<div id="screen-rods" class="screen">
+  <div class="sub-header">
+    <h2>🎣 Rods</h2>
+    <button class="close-btn" onclick="showScreen('tackle')">✕</button>
+  </div>
+  <div id="rods-list"></div>
+</div>
+
+<!-- ══ REELS SCREEN ══ -->
+<div id="screen-reels" class="screen">
+  <div class="sub-header">
+    <h2>🌀 Reels</h2>
+    <button class="close-btn" onclick="showScreen('tackle')">✕</button>
+  </div>
+  <div id="reels-list"></div>
 </div>
 
 <!-- ══ SETTINGS SCREEN ══ -->
@@ -772,7 +903,8 @@
 <script>
 // ════════════════════════════════════════
 //  FISH DEFINITIONS
-//  Each fish carries its own data.
+//  Each fish carries its own data. catchWeight = odds with Rod Lv1.
+//  catchWeightRod2 = odds once Rod Level 2 is purchased.
 // ════════════════════════════════════════
 const FISH = {
   minnow: {
@@ -780,8 +912,9 @@ const FISH = {
     name: 'Minnow',
     icon: '🐟',
     xp: 1,
-    value: 1,       // $ per fish — edit this to rebalance
-    catchWeight: 75, // relative weight for RNG
+    value: 1,           // $ per fish — edit this to rebalance
+    catchWeight: 50,     // relative weight for RNG at Rod Lv1
+    catchWeightRod2: 20, // relative weight for RNG at Rod Lv2
   },
   bluegill: {
     id: 'bluegill',
@@ -790,27 +923,80 @@ const FISH = {
     xp: 2,
     value: 1,
     catchWeight: 25,
+    catchWeightRod2: 25,
+  },
+  crappie: {
+    id: 'crappie',
+    name: 'Crappie',
+    icon: '🐡',
+    xp: 3,
+    value: 2,
+    catchWeight: 15,
+    catchWeightRod2: 25,
+  },
+  bass: {
+    id: 'bass',
+    name: 'Bass',
+    icon: '🐋', // placeholder icon — swap if you'd like something more bass-like
+    xp: 5,
+    value: 4,
+    catchWeight: 7,
+    catchWeightRod2: 20,
+  },
+  catfish: {
+    id: 'catfish',
+    name: 'Catfish',
+    icon: '🐟',
+    xp: 8,
+    value: 7,
+    catchWeight: 3,
+    catchWeightRod2: 10,
   },
 };
 
-// Build weighted pool once
-const FISH_POOL = [];
-Object.values(FISH).forEach(f => {
-  for (let i = 0; i < f.catchWeight; i++) FISH_POOL.push(f.id);
-});
+// Build weighted pool based on current rod level. Rebuilt whenever rod is upgraded.
+let FISH_POOL = [];
+function buildFishPool() {
+  FISH_POOL = [];
+  const useRod2 = state.rodLevel >= 2;
+  Object.values(FISH).forEach(f => {
+    const w = useRod2 ? f.catchWeightRod2 : f.catchWeight;
+    for (let i = 0; i < w; i++) FISH_POOL.push(f.id);
+  });
+}
 
 // ════════════════════════════════════════
 //  BAIT DEFINITIONS
+//  Corn = free starter bait (still has a count, costs $0 to buy).
+//  Worm = $5 each, unlocked from level 1.
 // ════════════════════════════════════════
 const BAITS = {
+  corn: {
+    id: 'corn',
+    name: 'Corn',
+    icon: '🌽',
+    cost: 0,
+    unlockLevel: 0,
+    description: 'Free starter bait.',
+  },
   worm: {
     id: 'worm',
     name: 'Worm',
     icon: '🪱',
-    infinite: true,  // starter bait, unlimited
-    description: 'Basic bait. Always available.',
+    cost: 5,
+    unlockLevel: 1,
+    description: 'A classic. $5 each.',
   },
 };
+
+// ════════════════════════════════════════
+//  ROD / REEL DEFINITIONS
+// ════════════════════════════════════════
+const ROD_LEVEL2_COST  = 100;
+const REEL_LEVEL2_COST = 150;
+const CAST_DURATION_BASE = 3000; // ms, Reel Lv1
+const CAST_DURATION_REEL2 = 2500; // ms, Reel Lv2 (0.5s faster)
+const BAIT_MAX = 100; // max held of any single bait
 
 // ════════════════════════════════════════
 //  XP / LEVEL CONFIG
@@ -838,12 +1024,14 @@ function defaultState() {
   return {
     gold: 0,
     xp: 0,
-    level: 1,
+    level: 0,
+    rodLevel: 1,
+    reelLevel: 1,
     // inventory: array of {fishId, count} or null per slot
     inventory: Array(INV_SLOTS).fill(null),
-    // bait inventory: { baitId: count } — infinite baits use -1
-    baitInventory: { worm: -1 },
-    activeBait: 'worm',
+    // bait inventory: { baitId: count }
+    baitInventory: { corn: 10 },
+    activeBait: 'corn',
   };
 }
 
@@ -859,20 +1047,45 @@ function saveGame() {
 function loadGame() {
   try {
     const raw = localStorage.getItem(SAVE_KEY);
-    if (!raw) return;
-    const saved = JSON.parse(raw);
-    // Merge carefully so new fields from updates don't break old saves
-    state = Object.assign(defaultState(), saved);
-    // Ensure inventory array length
-    while (state.inventory.length < INV_SLOTS) state.inventory.push(null);
-    state.inventory = state.inventory.slice(0, INV_SLOTS);
+    if (raw) {
+      const saved = JSON.parse(raw);
+      // Merge carefully so new fields from updates don't break old saves
+      state = Object.assign(defaultState(), saved);
+      // Ensure inventory array length
+      while (state.inventory.length < INV_SLOTS) state.inventory.push(null);
+      state.inventory = state.inventory.slice(0, INV_SLOTS);
+
+      // Sanitize bait inventory: clamp negatives/old -1 "infinite" values to 0,
+      // drop unknown bait ids, and give starting Corn if it's missing entirely
+      // (e.g. an old save from before Corn existed).
+      const defaults = defaultState().baitInventory;
+      const cleanBaitInv = {};
+      Object.keys(BAITS).forEach(id => {
+        const raw = state.baitInventory[id];
+        if (typeof raw === 'number' && raw >= 0) {
+          cleanBaitInv[id] = Math.min(raw, BAIT_MAX);
+        } else if (!(id in (saved.baitInventory || {}))) {
+          // key never existed in the old save — give the normal starting amount
+          cleanBaitInv[id] = defaults[id] || 0;
+        } else {
+          // key existed but was invalid (e.g. old -1 infinite marker)
+          cleanBaitInv[id] = 0;
+        }
+      });
+      state.baitInventory = cleanBaitInv;
+
+      // If active bait no longer exists or has zero count, fall back to corn
+      if (!BAITS[state.activeBait]) state.activeBait = 'corn';
+    }
   } catch(e) {}
+  buildFishPool();
 }
 
 function resetGame() {
   if (!confirm('Reset all progress? This cannot be undone.')) return;
   localStorage.removeItem(SAVE_KEY);
   state = defaultState();
+  buildFishPool();
   isCasting = false;
   clearInterval(castInterval);
   document.getElementById('gofish-progress').style.width = '0%';
@@ -890,6 +1103,9 @@ function showScreen(name) {
 
   if (name === 'inventory') renderInventoryScreen();
   if (name === 'bait')      renderBaitScreen();
+  if (name === 'market')    renderMarketScreen();
+  if (name === 'rods')      renderRodsScreen();
+  if (name === 'reels')     renderReelsScreen();
   if (name === 'main')      updateAllUI();
 }
 
@@ -897,15 +1113,13 @@ function openBait() { showScreen('bait'); }
 function closeBait(e) {
   if (e.target === document.getElementById('screen-bait')) showScreen('main');
 }
-function openMarket() {
-  // Placeholder — will be fleshed out later
-  alert('Market coming soon!');
-}
 
 // ════════════════════════════════════════
 //  FISHING LOGIC
 // ════════════════════════════════════════
-const CAST_DURATION = 3000; // ms
+function getCastDuration() {
+  return state.reelLevel >= 2 ? CAST_DURATION_REEL2 : CAST_DURATION_BASE;
+}
 let isCasting = false;
 let castInterval = null;
 let castStart = 0;
@@ -913,9 +1127,14 @@ let castStart = 0;
 function goFish() {
   if (isCasting) return;
   if (isInventoryFull()) return;
+  if ((state.baitInventory[state.activeBait] || 0) <= 0) return;
 
   isCasting = true;
   castStart = Date.now();
+  const castDuration = getCastDuration();
+
+  // Consume one bait
+  state.baitInventory[state.activeBait]--;
 
   const btn = document.getElementById('btn-gofish');
   btn.classList.add('pressed');
@@ -928,10 +1147,10 @@ function goFish() {
   // Progress bar
   castInterval = setInterval(() => {
     const elapsed = Date.now() - castStart;
-    const pct = Math.min(100, (elapsed / CAST_DURATION) * 100);
+    const pct = Math.min(100, (elapsed / castDuration) * 100);
     document.getElementById('gofish-progress').style.width = pct + '%';
 
-    if (elapsed >= CAST_DURATION) {
+    if (elapsed >= castDuration) {
       clearInterval(castInterval);
       finishCast();
     }
@@ -1103,11 +1322,18 @@ function updateGofishBtn() {
 
   if (isCasting) return; // don't override during cast
 
+  const outOfBait = (state.baitInventory[state.activeBait] || 0) <= 0;
+
   if (isInventoryFull()) {
     btn.disabled = true;
     btn.classList.add('disabled');
     text.textContent = 'INVENTORY FULL';
     navInv.classList.add('inv-alert');
+  } else if (outOfBait) {
+    btn.disabled = true;
+    btn.classList.add('disabled');
+    text.textContent = 'OUT OF BAIT';
+    navInv.classList.remove('inv-alert');
   } else {
     btn.disabled = false;
     btn.classList.remove('disabled');
@@ -1120,8 +1346,8 @@ function updateBaitCard() {
   const bait = BAITS[state.activeBait];
   if (!bait) return;
   document.getElementById('bait-icon').textContent  = bait.icon;
-  const count = state.baitInventory[state.activeBait];
-  document.getElementById('bait-count').textContent = count === -1 ? '∞' : count;
+  const count = state.baitInventory[state.activeBait] || 0;
+  document.getElementById('bait-count').textContent = count;
 }
 
 // ════════════════════════════════════════
@@ -1159,34 +1385,213 @@ function renderInventoryScreen() {
 }
 
 // ════════════════════════════════════════
+//  MARKET SCREEN RENDER + PURCHASE
+//  NOTE: Buy quantity is x10 only for now.
+//  TODO LATER: add 10 / 25 / 50 / 100 buy-quantity buttons.
+// ════════════════════════════════════════
+function renderMarketScreen() {
+  const list = document.getElementById('market-list');
+  list.innerHTML = '';
+  document.getElementById('market-result').textContent = '';
+
+  Object.values(BAITS).forEach(bait => {
+    const unlocked = state.level >= bait.unlockLevel;
+    const count = state.baitInventory[bait.id] || 0;
+    const div = document.createElement('div');
+    div.className = 'shop-item';
+
+    if (!unlocked) {
+      div.innerHTML = `
+        <div class="shop-item-top">
+          <span class="shop-item-icon">🔒</span>
+          <div class="shop-item-info">
+            <div class="shop-item-name">${bait.name}</div>
+            <div class="shop-item-desc">Unlocks at level ${bait.unlockLevel}</div>
+          </div>
+        </div>
+      `;
+    } else {
+      const atCap = count >= BAIT_MAX;
+      const costText = bait.cost === 0 ? 'Free' : `$${bait.cost} each`;
+      div.innerHTML = `
+        <div class="shop-item-top">
+          <span class="shop-item-icon">${bait.icon}</span>
+          <div class="shop-item-info">
+            <div class="shop-item-name">${bait.name}</div>
+            <div class="shop-item-desc">${costText}</div>
+          </div>
+          <div class="shop-item-count">x${count} / ${BAIT_MAX}</div>
+        </div>
+        <div class="shop-item-buybar">
+          <button class="buy-btn" data-bait="${bait.id}" data-qty="10" ${atCap ? 'disabled' : ''}>Buy 10</button>
+        </div>
+      `;
+    }
+    list.appendChild(div);
+  });
+
+  list.querySelectorAll('.buy-btn').forEach(btn => {
+    btn.onclick = () => buyBait(btn.dataset.bait, parseInt(btn.dataset.qty, 10));
+  });
+}
+
+function buyBait(baitId, qty) {
+  const bait = BAITS[baitId];
+  if (!bait) return;
+  const current = state.baitInventory[baitId] || 0;
+
+  if (current + qty > BAIT_MAX) {
+    document.getElementById('market-result').textContent = `Can't exceed ${BAIT_MAX} ${bait.name}!`;
+    return;
+  }
+  const totalCost = bait.cost * qty;
+  if (state.gold < totalCost) {
+    document.getElementById('market-result').textContent = `Not enough gold! Need $${totalCost}.`;
+    return;
+  }
+
+  state.gold -= totalCost;
+  state.baitInventory[baitId] = current + qty;
+  saveGame();
+  updateAllUI();
+  renderMarketScreen();
+  document.getElementById('market-result').textContent = `Bought ${qty} ${bait.name}!`;
+}
+
+// ════════════════════════════════════════
+//  RODS SCREEN RENDER + PURCHASE
+// ════════════════════════════════════════
+function renderRodsScreen() {
+  const list = document.getElementById('rods-list');
+  list.innerHTML = '';
+
+  const div = document.createElement('div');
+  div.className = 'shop-item';
+
+  if (state.rodLevel >= 2) {
+    div.innerHTML = `
+      <div class="shop-item-top">
+        <span class="shop-item-icon">🎣</span>
+        <div class="shop-item-info">
+          <div class="shop-item-name">Rod Level 2</div>
+          <div class="shop-item-desc">Improves your odds at catching better fish.</div>
+        </div>
+      </div>
+      <div class="upgrade-owned">✅ Owned</div>
+    `;
+  } else {
+    const canAfford = state.gold >= ROD_LEVEL2_COST;
+    div.innerHTML = `
+      <div class="shop-item-top">
+        <span class="shop-item-icon">🎣</span>
+        <div class="shop-item-info">
+          <div class="shop-item-name">Rod Level 2</div>
+          <div class="shop-item-desc">Improves your odds at catching better fish.</div>
+        </div>
+      </div>
+      <button class="upgrade-btn" id="buy-rod2" ${canAfford ? '' : 'disabled'}>Buy — $${ROD_LEVEL2_COST}</button>
+    `;
+    list.appendChild(div);
+    document.getElementById('buy-rod2').onclick = buyRodLevel2;
+    return;
+  }
+  list.appendChild(div);
+}
+
+function buyRodLevel2() {
+  if (state.rodLevel >= 2) return;
+  if (state.gold < ROD_LEVEL2_COST) return;
+  state.gold -= ROD_LEVEL2_COST;
+  state.rodLevel = 2;
+  buildFishPool();
+  saveGame();
+  updateAllUI();
+  renderRodsScreen();
+}
+
+// ════════════════════════════════════════
+//  REELS SCREEN RENDER + PURCHASE
+// ════════════════════════════════════════
+function renderReelsScreen() {
+  const list = document.getElementById('reels-list');
+  list.innerHTML = '';
+
+  const div = document.createElement('div');
+  div.className = 'shop-item';
+
+  if (state.reelLevel >= 2) {
+    div.innerHTML = `
+      <div class="shop-item-top">
+        <span class="shop-item-icon">🌀</span>
+        <div class="shop-item-info">
+          <div class="shop-item-name">Reel Level 2</div>
+          <div class="shop-item-desc">Cuts your casting time by 0.5 seconds.</div>
+        </div>
+      </div>
+      <div class="upgrade-owned">✅ Owned</div>
+    `;
+    list.appendChild(div);
+  } else {
+    const canAfford = state.gold >= REEL_LEVEL2_COST;
+    div.innerHTML = `
+      <div class="shop-item-top">
+        <span class="shop-item-icon">🌀</span>
+        <div class="shop-item-info">
+          <div class="shop-item-name">Reel Level 2</div>
+          <div class="shop-item-desc">Cuts your casting time by 0.5 seconds.</div>
+        </div>
+      </div>
+      <button class="upgrade-btn" id="buy-reel2" ${canAfford ? '' : 'disabled'}>Buy — $${REEL_LEVEL2_COST}</button>
+    `;
+    list.appendChild(div);
+    document.getElementById('buy-reel2').onclick = buyReelLevel2;
+  }
+}
+
+function buyReelLevel2() {
+  if (state.reelLevel >= 2) return;
+  if (state.gold < REEL_LEVEL2_COST) return;
+  state.gold -= REEL_LEVEL2_COST;
+  state.reelLevel = 2;
+  saveGame();
+  updateAllUI();
+  renderReelsScreen();
+}
+
+// ════════════════════════════════════════
 //  BAIT SCREEN RENDER
 // ════════════════════════════════════════
 function renderBaitScreen() {
   const list = document.getElementById('bait-slots-list');
   list.innerHTML = '';
 
-  // 5 bait slots
-  const baitIds = Object.keys(state.baitInventory);
+  const unlockedIds = Object.keys(BAITS).filter(id => state.level >= BAITS[id].unlockLevel);
+
   for (let i = 0; i < 5; i++) {
     const div = document.createElement('div');
-    if (i < baitIds.length) {
-      const id    = baitIds[i];
+    if (i < unlockedIds.length) {
+      const id    = unlockedIds[i];
       const bait  = BAITS[id];
-      const count = state.baitInventory[id];
+      const count = state.baitInventory[id] || 0;
       const isSelected = state.activeBait === id;
-      div.className = 'bait-slot' + (isSelected ? ' selected' : '');
+      const isEmpty = count <= 0;
+      div.className = 'bait-slot' + (isSelected ? ' selected' : '') + (isEmpty ? ' empty' : '');
       div.innerHTML = `
         <span class="bs-icon">${bait.icon}</span>
         <div class="bs-info">
           <div class="bs-name">${bait.name}</div>
-          <div class="bs-count">${count === -1 ? 'Unlimited' : `x${count}`}</div>
+          <div class="bs-count">x${count}</div>
         </div>
         ${isSelected ? '<span class="bs-selected">✅</span>' : ''}
       `;
-      div.onclick = () => { state.activeBait = id; saveGame(); renderBaitScreen(); updateBaitCard(); };
+      if (!isEmpty) {
+        div.onclick = () => { state.activeBait = id; saveGame(); renderBaitScreen(); updateBaitCard(); };
+      } else {
+        div.style.cursor = 'default';
+      }
     } else {
       div.className = 'bait-slot empty';
-      div.innerHTML = `<span class="bs-icon">—</span><div class="bs-info"><div class="bs-name">Empty Slot</div></div>`;
+      div.innerHTML = `<span class="bs-icon">—</span><div class="bs-info"><div class="bs-name">Locked</div></div>`;
     }
     list.appendChild(div);
   }
