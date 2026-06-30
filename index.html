@@ -807,7 +807,7 @@
     </button>
 
     <!-- Autofisher Card -->
-    <div class="dock-card" id="card-autofisher">
+    <div class="dock-card" id="card-autofisher" onclick="onAutofisherCardClick()">
       <div class="card-title">AUTOFISHER</div>
       <div class="card-icon">🎣</div>
       <div id="autofisher-toggle">OFF</div>
@@ -981,9 +981,9 @@ const BAITS = {
     id: 'worm',
     name: 'Worm',
     icon: '🪱',
-    cost: .5,
+    cost: 5,
     unlockLevel: 1,
-    description: 'A classic. $0.50 each.',
+    description: 'A classic. $5 each.',
   },
 };
 
@@ -996,6 +996,9 @@ const ROD2_DOUBLE_CATCH_CHANCE = 0.10; // 10% chance to catch 2 fish using 1 bai
 const CAST_DURATION_BASE = 3000; // ms, Reel Lv1
 const CAST_DURATION_REEL2 = 2500; // ms, Reel Lv2 (0.5s faster)
 const BAIT_MAX = 100; // max held of any single bait
+const AUTOFISHER_UNLOCK_LEVEL = 5;
+const AUTOFISHER_COST = 100;
+const AUTOFISHER_TICK_MS = 6000; // fixed regardless of reel level
 
 // ════════════════════════════════════════
 //  XP / LEVEL CONFIG
@@ -1026,6 +1029,8 @@ function defaultState() {
     level: 0,
     rodLevel: 1,
     reelLevel: 1,
+    autofisherOwned: false,
+    autofisherOn: false,
     // inventory: array of {fishId, count} or null per slot
     inventory: Array(INV_SLOTS).fill(null),
     // bait inventory: { baitId: count }
@@ -1078,6 +1083,15 @@ function loadGame() {
     }
   } catch(e) {}
   buildFishPool();
+
+  // Resume autofisher if it was left on and conditions still allow it.
+  if (state.autofisherOwned && state.autofisherOn) {
+    if ((state.baitInventory[state.activeBait] || 0) <= 0 || isInventoryFull()) {
+      state.autofisherOn = false;
+    } else {
+      startAutofisher();
+    }
+  }
 }
 
 function resetGame() {
@@ -1087,6 +1101,7 @@ function resetGame() {
   buildFishPool();
   isCasting = false;
   clearInterval(castInterval);
+  stopAutofisher();
   document.getElementById('gofish-progress').style.width = '0%';
   updateAllUI();
   showScreen('main');
@@ -1208,6 +1223,134 @@ function showCatchPopup(fishList) {
   setTimeout(() => el.classList.remove('show'), 2000);
 }
 
+// ════════════════════════════════════════
+//  AUTOFISHER
+//  Unlocks at level 5, one-time 100 gold purchase, then toggled on/off.
+//  Ticks every 6000ms (fixed, NOT affected by Reel Level 2).
+//  Each tick: consumes 1 of the active bait, rolls the fish pool (so bait
+//  type still affects odds), and respects Rod Level 2's double-catch chance.
+//  Turns itself OFF (not auto-resuming) if bait runs out or inventory is full.
+// ════════════════════════════════════════
+let autofisherInterval = null;
+
+function performOneCatch() {
+  // Shared by manual casting and the autofisher.
+  // Returns true if at least one fish was actually added to inventory.
+  const fish = rollFish();
+  const caughtFish = [fish];
+
+  if (state.rodLevel >= 2 && Math.random() < ROD2_DOUBLE_CATCH_CHANCE) {
+    caughtFish.push(rollFish());
+  }
+
+  const actuallyCaught = [];
+  caughtFish.forEach(f => {
+    if (addToInventory(f.id)) {
+      grantXP(f.xp);
+      actuallyCaught.push(f);
+    }
+  });
+
+  if (actuallyCaught.length > 0) {
+    showCatchPopup(actuallyCaught);
+  }
+  return actuallyCaught.length > 0;
+}
+
+function startAutofisher() {
+  if (autofisherInterval) return;
+  autofisherInterval = setInterval(autofisherTick, AUTOFISHER_TICK_MS);
+}
+
+function stopAutofisher() {
+  if (autofisherInterval) {
+    clearInterval(autofisherInterval);
+    autofisherInterval = null;
+  }
+}
+
+function autofisherTick() {
+  if (!state.autofisherOn) { stopAutofisher(); return; }
+
+  // Stop conditions: out of bait, or inventory full. Requires manual restart.
+  if ((state.baitInventory[state.activeBait] || 0) <= 0) {
+    state.autofisherOn = false;
+    stopAutofisher();
+    updateAutofisherCard();
+    saveGame();
+    return;
+  }
+  if (isInventoryFull()) {
+    state.autofisherOn = false;
+    stopAutofisher();
+    updateAutofisherCard();
+    saveGame();
+    return;
+  }
+
+  // Consume bait and attempt the catch, just like manual fishing.
+  state.baitInventory[state.activeBait]--;
+  performOneCatch();
+
+  updateAllUI();
+  saveGame();
+}
+
+function onAutofisherCardClick() {
+  if (!state.autofisherOwned) {
+    // Not yet purchased — try to buy it.
+    if (state.level < AUTOFISHER_UNLOCK_LEVEL) {
+      document.getElementById('catch-popup').textContent = `Autofisher unlocks at level ${AUTOFISHER_UNLOCK_LEVEL}`;
+      document.getElementById('catch-popup').classList.add('show');
+      setTimeout(() => document.getElementById('catch-popup').classList.remove('show'), 2000);
+      return;
+    }
+    if (state.gold < AUTOFISHER_COST) {
+      document.getElementById('catch-popup').textContent = `Need $${AUTOFISHER_COST} to buy the Autofisher`;
+      document.getElementById('catch-popup').classList.add('show');
+      setTimeout(() => document.getElementById('catch-popup').classList.remove('show'), 2000);
+      return;
+    }
+    state.gold -= AUTOFISHER_COST;
+    state.autofisherOwned = true;
+    state.autofisherOn = true;
+    startAutofisher();
+    saveGame();
+    updateAllUI();
+    return;
+  }
+
+  // Already owned — toggle on/off.
+  state.autofisherOn = !state.autofisherOn;
+  if (state.autofisherOn) {
+    // Don't allow turning on if there's no bait or inventory is full.
+    if ((state.baitInventory[state.activeBait] || 0) <= 0 || isInventoryFull()) {
+      state.autofisherOn = false;
+    } else {
+      startAutofisher();
+    }
+  } else {
+    stopAutofisher();
+  }
+  saveGame();
+  updateAllUI();
+}
+
+function updateAutofisherCard() {
+  const card = document.getElementById('card-autofisher');
+  const toggle = document.getElementById('autofisher-toggle');
+  if (!state.autofisherOwned) {
+    const locked = state.level < AUTOFISHER_UNLOCK_LEVEL;
+    toggle.textContent = locked ? `LVL ${AUTOFISHER_UNLOCK_LEVEL}` : `BUY $${AUTOFISHER_COST}`;
+    toggle.classList.remove('on');
+    card.style.opacity = locked ? '0.6' : '1';
+  } else {
+    toggle.textContent = state.autofisherOn ? 'ON' : 'OFF';
+    toggle.classList.toggle('on', state.autofisherOn);
+    card.style.opacity = '1';
+  }
+}
+
 // Ripple elements
 function addRipples() {
   const scene = document.getElementById('scene');
@@ -1318,6 +1461,7 @@ function updateAllUI() {
   updateTopBar();
   updateGofishBtn();
   updateBaitCard();
+  updateAutofisherCard();
 }
 
 function updateTopBar() {
