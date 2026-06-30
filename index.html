@@ -155,6 +155,8 @@
     text-align: center;
     position: relative;
     box-shadow: 0 4px 12px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.08);
+    cursor: pointer;
+    user-select: none;
   }
   #location-sign::before, #location-sign::after {
     content: '🍂';
@@ -195,6 +197,37 @@
       #4a7a5a 68%, #3d6b7a 72%,
       #2a5a6a 80%, #1a3a5a 100%
     );
+  }
+  /* Mountain lake palette for Lookout Lake — cooler, snow-capped, deeper blues */
+  #scene.scene-lookout {
+    background: linear-gradient(180deg,
+      #aebfd6 0%, #c9d9e8 20%,
+      #e8eef4 28%, #c9d9e8 34%,
+      #7d93ab 50%, #5a7088 56%,
+      #475a70 60%, #344a5e 62%,
+      #3d5a68 64%, #4a7088 68%,
+      #2e5468 78%, #1a3a4e 100%
+    );
+  }
+  #scene.scene-lookout::before {
+    content: '⛰️';
+    position: absolute;
+    top: 6%;
+    left: 8%;
+    font-size: 64px;
+    opacity: 0.85;
+    pointer-events: none;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+  }
+  #scene.scene-lookout::after {
+    content: '🏔️';
+    position: absolute;
+    top: 2%;
+    right: 10%;
+    font-size: 78px;
+    opacity: 0.9;
+    pointer-events: none;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
   }
 
   /* Clouds */
@@ -774,7 +807,7 @@
   </div>
 
   <!-- Location Sign -->
-  <div id="location-sign">
+  <div id="location-sign" onclick="showScreen('travel')">
     <div id="location-name">PINEWOOD POND</div>
     <div id="location-desc">📍 A peaceful pond perfect for beginners.</div>
   </div>
@@ -845,6 +878,16 @@
   </div>
 </div>
 
+<!-- ══ TRAVEL SCREEN ══ -->
+<div id="screen-travel" class="screen">
+  <div class="sub-header">
+    <h2>🗺️ Travel</h2>
+    <button class="close-btn" onclick="showScreen('main')">✕</button>
+  </div>
+  <div id="travel-list"></div>
+  <div id="travel-result"></div>
+</div>
+
 <!-- ══ INVENTORY SCREEN ══ -->
 <div id="screen-inventory" class="screen">
   <div class="sub-header">
@@ -905,6 +948,7 @@
 //  FISH DEFINITIONS
 //  Each fish carries its own data. catchWeightByBait = odds depending on
 //  which bait is active (different baits favor different fish slightly).
+//  location = which location this fish can be caught at.
 // ════════════════════════════════════════
 const FISH = {
   minnow: {
@@ -913,6 +957,7 @@ const FISH = {
     icon: '🐟',
     xp: 1,
     value: 1,           // $ per fish — edit this to rebalance
+    location: 'pinewood',
     catchWeightByBait: { corn: 50, worm: 25 },
   },
   bluegill: {
@@ -921,6 +966,7 @@ const FISH = {
     icon: '🐠',
     xp: 2,
     value: 1,
+    location: 'pinewood',
     catchWeightByBait: { corn: 25, worm: 25 },
   },
   crappie: {
@@ -929,6 +975,7 @@ const FISH = {
     icon: '🐡',
     xp: 3,
     value: 2,
+    location: 'pinewood',
     catchWeightByBait: { corn: 15, worm: 25 },
   },
   bass: {
@@ -937,6 +984,7 @@ const FISH = {
     icon: '🐋', // placeholder icon — swap if you'd like something more bass-like
     xp: 5,
     value: 4,
+    location: 'pinewood',
     catchWeightByBait: { corn: 7, worm: 15 },
   },
   catfish: {
@@ -945,23 +993,93 @@ const FISH = {
     icon: '🐟',
     xp: 8,
     value: 7,
+    location: 'pinewood',
+    catchWeightByBait: { corn: 3, worm: 10 },
+  },
+  perch: {
+    id: 'perch',
+    name: 'Perch',
+    icon: '🐠',
+    xp: 8,
+    value: 7,
+    location: 'lookout',
+    catchWeightByBait: { corn: 50, worm: 25 },
+  },
+  trout: {
+    id: 'trout',
+    name: 'Trout',
+    icon: '🐟',
+    xp: 12,
+    value: 10,
+    location: 'lookout',
+    catchWeightByBait: { corn: 25, worm: 25 },
+  },
+  salmon: {
+    id: 'salmon',
+    name: 'Salmon',
+    icon: '🍣', // placeholder icon — no great salmon emoji available
+    xp: 18,
+    value: 15,
+    location: 'lookout',
+    catchWeightByBait: { corn: 15, worm: 25 },
+  },
+  pike: {
+    id: 'pike',
+    name: 'Pike',
+    icon: '🐊', // placeholder icon — no great pike emoji available
+    xp: 25,
+    value: 22,
+    location: 'lookout',
+    catchWeightByBait: { corn: 7, worm: 15 },
+  },
+  sturgeon: {
+    id: 'sturgeon',
+    name: 'Sturgeon',
+    icon: '🐉', // placeholder icon — no great sturgeon emoji available
+    xp: 35,
+    value: 30,
+    location: 'lookout',
     catchWeightByBait: { corn: 3, worm: 10 },
   },
 };
 
-// Build weighted pool based on the currently active bait. Rebuilt whenever
-// the active bait changes.
+// ════════════════════════════════════════
+//  LOCATION DEFINITIONS
+// ════════════════════════════════════════
+const LOCATIONS = {
+  pinewood: {
+    id: 'pinewood',
+    name: 'PINEWOOD POND',
+    desc: '📍 A peaceful pond perfect for beginners.',
+    unlockLevel: 0,
+    unlockCost: 0,
+    travelCost: 0,
+  },
+  lookout: {
+    id: 'lookout',
+    name: 'LOOKOUT LAKE',
+    desc: '🏔️ A windswept mountain lake with bigger fish.',
+    unlockLevel: 5,
+    unlockCost: 100,
+    travelCost: 10, // gold cost each time you travel here from elsewhere
+  },
+};
+
+// Build weighted pool based on the currently active bait AND location.
+// Rebuilt whenever the active bait or location changes.
 let FISH_POOL = [];
 function buildFishPool() {
   FISH_POOL = [];
   const baitId = state.activeBait;
   Object.values(FISH).forEach(f => {
+    if (f.location !== state.location) return;
     const w = (f.catchWeightByBait && f.catchWeightByBait[baitId] != null)
       ? f.catchWeightByBait[baitId]
       : f.catchWeightByBait.corn; // fallback
     for (let i = 0; i < w; i++) FISH_POOL.push(f.id);
   });
 }
+
 
 // ════════════════════════════════════════
 //  BAIT DEFINITIONS
@@ -1031,6 +1149,8 @@ function defaultState() {
     reelLevel: 1,
     autofisherOwned: false,
     autofisherOn: false,
+    location: 'pinewood',
+    unlockedLocations: ['pinewood'],
     // inventory: array of {fishId, count} or null per slot
     inventory: Array(INV_SLOTS).fill(null),
     // bait inventory: { baitId: count }
@@ -1080,6 +1200,14 @@ function loadGame() {
 
       // If active bait no longer exists or has zero count, fall back to corn
       if (!BAITS[state.activeBait]) state.activeBait = 'corn';
+
+      // Sanitize location fields
+      if (!Array.isArray(state.unlockedLocations) || state.unlockedLocations.length === 0) {
+        state.unlockedLocations = ['pinewood'];
+      }
+      if (!LOCATIONS[state.location] || !state.unlockedLocations.includes(state.location)) {
+        state.location = 'pinewood';
+      }
     }
   } catch(e) {}
   buildFishPool();
@@ -1120,6 +1248,7 @@ function showScreen(name) {
   if (name === 'market')    renderMarketScreen();
   if (name === 'rods')      renderRodsScreen();
   if (name === 'reels')     renderReelsScreen();
+  if (name === 'travel')    renderTravelScreen();
   if (name === 'main')      updateAllUI();
 }
 
@@ -1462,6 +1591,7 @@ function updateAllUI() {
   updateGofishBtn();
   updateBaitCard();
   updateAutofisherCard();
+  updateLocationSign();
 }
 
 function updateTopBar() {
@@ -1717,6 +1847,112 @@ function buyReelLevel2() {
   saveGame();
   updateAllUI();
   renderReelsScreen();
+}
+
+// ════════════════════════════════════════
+//  TRAVEL / LOCATIONS
+// ════════════════════════════════════════
+function updateLocationSign() {
+  const loc = LOCATIONS[state.location];
+  if (!loc) return;
+  document.getElementById('location-name').textContent = loc.name;
+  document.getElementById('location-desc').textContent = loc.desc + '  (tap to travel)';
+
+  const scene = document.getElementById('scene');
+  scene.classList.toggle('scene-lookout', state.location === 'lookout');
+}
+
+function renderTravelScreen() {
+  const list = document.getElementById('travel-list');
+  list.innerHTML = '';
+  document.getElementById('travel-result').textContent = '';
+
+  Object.values(LOCATIONS).forEach(loc => {
+    const isUnlocked = state.unlockedLocations.includes(loc.id);
+    const isCurrent  = state.location === loc.id;
+    const div = document.createElement('div');
+    div.className = 'shop-item';
+
+    if (!isUnlocked) {
+      const meetsLevel = state.level >= loc.unlockLevel;
+      const canAfford  = state.gold >= loc.unlockCost;
+      const canUnlock  = meetsLevel && canAfford;
+      div.innerHTML = `
+        <div class="shop-item-top">
+          <span class="shop-item-icon">🔒</span>
+          <div class="shop-item-info">
+            <div class="shop-item-name">${loc.name}</div>
+            <div class="shop-item-desc">${loc.desc}</div>
+            <div class="shop-item-desc">Requires level ${loc.unlockLevel}${loc.unlockCost > 0 ? ` and $${loc.unlockCost}` : ''}</div>
+          </div>
+        </div>
+        <button class="upgrade-btn" id="unlock-${loc.id}" ${canUnlock ? '' : 'disabled'}>
+          ${meetsLevel ? `Unlock — $${loc.unlockCost}` : `Locked (Lv ${loc.unlockLevel})`}
+        </button>
+      `;
+      list.appendChild(div);
+      const btn = document.getElementById(`unlock-${loc.id}`);
+      if (btn) btn.onclick = () => unlockLocation(loc.id);
+    } else if (isCurrent) {
+      div.innerHTML = `
+        <div class="shop-item-top">
+          <span class="shop-item-icon">📍</span>
+          <div class="shop-item-info">
+            <div class="shop-item-name">${loc.name}</div>
+            <div class="shop-item-desc">${loc.desc}</div>
+          </div>
+        </div>
+        <div class="upgrade-owned">✅ You are here</div>
+      `;
+      list.appendChild(div);
+    } else {
+      const canAfford = state.gold >= loc.travelCost;
+      div.innerHTML = `
+        <div class="shop-item-top">
+          <span class="shop-item-icon">🗺️</span>
+          <div class="shop-item-info">
+            <div class="shop-item-name">${loc.name}</div>
+            <div class="shop-item-desc">${loc.desc}</div>
+          </div>
+        </div>
+        <button class="upgrade-btn" id="travel-${loc.id}" ${canAfford ? '' : 'disabled'}>
+          Travel — ${loc.travelCost > 0 ? `$${loc.travelCost}` : 'Free'}
+        </button>
+      `;
+      list.appendChild(div);
+      document.getElementById(`travel-${loc.id}`).onclick = () => travelTo(loc.id);
+    }
+  });
+}
+
+function unlockLocation(locId) {
+  const loc = LOCATIONS[locId];
+  if (!loc || state.unlockedLocations.includes(locId)) return;
+  if (state.level < loc.unlockLevel) return;
+  if (state.gold < loc.unlockCost) return;
+
+  state.gold -= loc.unlockCost;
+  state.unlockedLocations.push(locId);
+  saveGame();
+  renderTravelScreen();
+}
+
+function travelTo(locId) {
+  const loc = LOCATIONS[locId];
+  if (!loc || !state.unlockedLocations.includes(locId)) return;
+  if (state.location === locId) return;
+  if (state.gold < loc.travelCost) {
+    document.getElementById('travel-result').textContent = `Not enough gold to travel! Need $${loc.travelCost}.`;
+    return;
+  }
+
+  state.gold -= loc.travelCost;
+  state.location = locId;
+  buildFishPool();
+  saveGame();
+  updateAllUI();
+  renderTravelScreen();
+  document.getElementById('travel-result').textContent = `Traveled to ${loc.name}!`;
 }
 
 // ════════════════════════════════════════
