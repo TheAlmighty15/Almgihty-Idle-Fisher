@@ -958,7 +958,7 @@ const FISH = {
     xp: 1,
     value: 1,           // $ per fish — edit this to rebalance
     location: 'pinewood',
-    catchWeightByBait: { corn: 50, worm: 25 },
+    catchWeightByBait: { corn: 50, worm: 25, cricket: 20 },
   },
   bluegill: {
     id: 'bluegill',
@@ -967,7 +967,7 @@ const FISH = {
     xp: 2,
     value: 1,
     location: 'pinewood',
-    catchWeightByBait: { corn: 25, worm: 25 },
+    catchWeightByBait: { corn: 25, worm: 25, cricket: 22 },
   },
   crappie: {
     id: 'crappie',
@@ -976,7 +976,7 @@ const FISH = {
     xp: 3,
     value: 2,
     location: 'pinewood',
-    catchWeightByBait: { corn: 15, worm: 25 },
+    catchWeightByBait: { corn: 15, worm: 25, cricket: 27 },
   },
   bass: {
     id: 'bass',
@@ -985,7 +985,7 @@ const FISH = {
     xp: 5,
     value: 4,
     location: 'pinewood',
-    catchWeightByBait: { corn: 7, worm: 15 },
+    catchWeightByBait: { corn: 7, worm: 15, cricket: 18 },
   },
   catfish: {
     id: 'catfish',
@@ -994,7 +994,7 @@ const FISH = {
     xp: 8,
     value: 7,
     location: 'pinewood',
-    catchWeightByBait: { corn: 3, worm: 10 },
+    catchWeightByBait: { corn: 3, worm: 10, cricket: 13 },
   },
   perch: {
     id: 'perch',
@@ -1003,7 +1003,7 @@ const FISH = {
     xp: 8,
     value: 7,
     location: 'lookout',
-    catchWeightByBait: { corn: 50, worm: 25 },
+    catchWeightByBait: { corn: 50, worm: 25, cricket: 20 },
   },
   trout: {
     id: 'trout',
@@ -1012,7 +1012,7 @@ const FISH = {
     xp: 12,
     value: 10,
     location: 'lookout',
-    catchWeightByBait: { corn: 25, worm: 25 },
+    catchWeightByBait: { corn: 25, worm: 25, cricket: 22 },
   },
   salmon: {
     id: 'salmon',
@@ -1021,7 +1021,7 @@ const FISH = {
     xp: 18,
     value: 15,
     location: 'lookout',
-    catchWeightByBait: { corn: 15, worm: 25 },
+    catchWeightByBait: { corn: 15, worm: 25, cricket: 27 },
   },
   pike: {
     id: 'pike',
@@ -1030,7 +1030,7 @@ const FISH = {
     xp: 25,
     value: 22,
     location: 'lookout',
-    catchWeightByBait: { corn: 7, worm: 15 },
+    catchWeightByBait: { corn: 7, worm: 15, cricket: 18 },
   },
   sturgeon: {
     id: 'sturgeon',
@@ -1039,7 +1039,7 @@ const FISH = {
     xp: 35,
     value: 30,
     location: 'lookout',
-    catchWeightByBait: { corn: 3, worm: 10 },
+    catchWeightByBait: { corn: 3, worm: 10, cricket: 13 },
   },
 };
 
@@ -1099,9 +1099,17 @@ const BAITS = {
     id: 'worm',
     name: 'Worm',
     icon: '🪱',
-    cost: .5,
+    cost: 0.5,
     unlockLevel: 1,
     description: 'A classic. $0.50 each.',
+  },
+  cricket: {
+    id: 'cricket',
+    name: 'Cricket',
+    icon: '🦗',
+    cost: 2.5,
+    unlockLevel: 5,
+    description: 'Premium bait. $2.50 each.',
   },
 };
 
@@ -1109,10 +1117,14 @@ const BAITS = {
 //  ROD / REEL DEFINITIONS
 // ════════════════════════════════════════
 const ROD_LEVEL2_COST  = 100;
+const ROD_LEVEL3_COST  = 300;
 const REEL_LEVEL2_COST = 150;
+const REEL_LEVEL3_COST = 500;
 const ROD2_DOUBLE_CATCH_CHANCE = 0.10; // 10% chance to catch 2 fish using 1 bait at Rod Lv2
+const ROD3_DOUBLE_CATCH_CHANCE = 0.20; // 20% chance to catch 2 fish using 1 bait at Rod Lv3
 const CAST_DURATION_BASE = 3000; // ms, Reel Lv1
 const CAST_DURATION_REEL2 = 2500; // ms, Reel Lv2 (0.5s faster)
+const CAST_DURATION_REEL3 = 2000; // ms, Reel Lv3 (1s faster than base)
 const BAIT_MAX = 100; // max held of any single bait
 const AUTOFISHER_UNLOCK_LEVEL = 5;
 const AUTOFISHER_COST = 100;
@@ -1121,7 +1133,7 @@ const AUTOFISHER_TICK_MS = 6000; // fixed regardless of reel level
 // ════════════════════════════════════════
 //  XP / LEVEL CONFIG
 // ════════════════════════════════════════
-const MAX_LEVEL = 5;
+const MAX_LEVEL = 10;
 function xpForLevel(lvl) {
   // Level 1->2: 10 XP, each next 50% more
   let req = 10;
@@ -1261,7 +1273,14 @@ function closeBait(e) {
 //  FISHING LOGIC
 // ════════════════════════════════════════
 function getCastDuration() {
-  return state.reelLevel >= 2 ? CAST_DURATION_REEL2 : CAST_DURATION_BASE;
+  if (state.reelLevel >= 3) return CAST_DURATION_REEL3;
+  if (state.reelLevel >= 2) return CAST_DURATION_REEL2;
+  return CAST_DURATION_BASE;
+}
+function getDoubleCatchChance() {
+  if (state.rodLevel >= 3) return ROD3_DOUBLE_CATCH_CHANCE;
+  if (state.rodLevel >= 2) return ROD2_DOUBLE_CATCH_CHANCE;
+  return 0;
 }
 let isCasting = false;
 let castInterval = null;
@@ -1304,9 +1323,9 @@ function finishCast() {
   const fish = rollFish();
   const caughtFish = [fish];
 
-  // Rod Level 2: 10% chance to catch a 2nd fish using the same 1 bait.
+  // Rod Level 2/3: chance to catch a 2nd fish using the same 1 bait.
   // Both rolls draw from the same weighted pool (duplicates are possible).
-  if (state.rodLevel >= 2 && Math.random() < ROD2_DOUBLE_CATCH_CHANCE) {
+  if (Math.random() < getDoubleCatchChance()) {
     const bonusFish = rollFish();
     caughtFish.push(bonusFish);
   }
@@ -1368,7 +1387,7 @@ function performOneCatch() {
   const fish = rollFish();
   const caughtFish = [fish];
 
-  if (state.rodLevel >= 2 && Math.random() < ROD2_DOUBLE_CATCH_CHANCE) {
+  if (Math.random() < getDoubleCatchChance()) {
     caughtFish.push(rollFish());
   }
 
@@ -1596,7 +1615,7 @@ function updateAllUI() {
 
 function updateTopBar() {
   document.getElementById('level-num').textContent = state.level;
-  document.getElementById('gold-amount').textContent = state.gold;
+  document.getElementById('gold-amount').textContent = formatGold(state.gold);
 
   const isMaxed = state.level >= MAX_LEVEL;
   const needed  = isMaxed ? xpForLevel(MAX_LEVEL - 1) : xpForLevel(state.level);
@@ -1704,7 +1723,7 @@ function renderMarketScreen() {
       `;
     } else {
       const atCap = count >= BAIT_MAX;
-      const costText = bait.cost === 0 ? 'Free' : `$${bait.cost} each`;
+      const costText = bait.cost === 0 ? 'Free' : `$${formatGold(bait.cost)} each`;
       div.innerHTML = `
         <div class="shop-item-top">
           <span class="shop-item-icon">${bait.icon}</span>
@@ -1738,16 +1757,26 @@ function buyBait(baitId, qty) {
   }
   const totalCost = bait.cost * qty;
   if (state.gold < totalCost) {
-    document.getElementById('market-result').textContent = `Not enough gold! Need $${totalCost}.`;
+    document.getElementById('market-result').textContent = `Not enough gold! Need $${formatGold(totalCost)}.`;
     return;
   }
 
-  state.gold -= totalCost;
+  state.gold = roundGold(state.gold - totalCost);
   state.baitInventory[baitId] = current + qty;
   saveGame();
   updateAllUI();
   renderMarketScreen();
   document.getElementById('market-result').textContent = `Bought ${qty} ${bait.name}!`;
+}
+
+// Avoid floating point drift (e.g. 4.999999999998) when working with
+// fractional bait costs like $0.50 and $2.50.
+function roundGold(amount) {
+  return Math.round(amount * 100) / 100;
+}
+function formatGold(amount) {
+  const rounded = roundGold(amount);
+  return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(2);
 }
 
 // ════════════════════════════════════════
@@ -1757,11 +1786,11 @@ function renderRodsScreen() {
   const list = document.getElementById('rods-list');
   list.innerHTML = '';
 
-  const div = document.createElement('div');
-  div.className = 'shop-item';
-
+  // Rod Level 2 card
+  const div2 = document.createElement('div');
+  div2.className = 'shop-item';
   if (state.rodLevel >= 2) {
-    div.innerHTML = `
+    div2.innerHTML = `
       <div class="shop-item-top">
         <span class="shop-item-icon">🎣</span>
         <div class="shop-item-info">
@@ -1773,7 +1802,7 @@ function renderRodsScreen() {
     `;
   } else {
     const canAfford = state.gold >= ROD_LEVEL2_COST;
-    div.innerHTML = `
+    div2.innerHTML = `
       <div class="shop-item-top">
         <span class="shop-item-icon">🎣</span>
         <div class="shop-item-info">
@@ -1783,11 +1812,51 @@ function renderRodsScreen() {
       </div>
       <button class="upgrade-btn" id="buy-rod2" ${canAfford ? '' : 'disabled'}>Buy — $${ROD_LEVEL2_COST}</button>
     `;
-    list.appendChild(div);
-    document.getElementById('buy-rod2').onclick = buyRodLevel2;
-    return;
   }
-  list.appendChild(div);
+  list.appendChild(div2);
+  const btn2 = document.getElementById('buy-rod2');
+  if (btn2) btn2.onclick = buyRodLevel2;
+
+  // Rod Level 3 card
+  const div3 = document.createElement('div');
+  div3.className = 'shop-item';
+  if (state.rodLevel >= 3) {
+    div3.innerHTML = `
+      <div class="shop-item-top">
+        <span class="shop-item-icon">🎣</span>
+        <div class="shop-item-info">
+          <div class="shop-item-name">Rod Level 3</div>
+          <div class="shop-item-desc">20% chance to catch 2 fish using only 1 bait.</div>
+        </div>
+      </div>
+      <div class="upgrade-owned">✅ Owned</div>
+    `;
+  } else if (state.rodLevel < 2) {
+    div3.innerHTML = `
+      <div class="shop-item-top">
+        <span class="shop-item-icon">🔒</span>
+        <div class="shop-item-info">
+          <div class="shop-item-name">Rod Level 3</div>
+          <div class="shop-item-desc">Requires Rod Level 2 first.</div>
+        </div>
+      </div>
+    `;
+  } else {
+    const canAfford = state.gold >= ROD_LEVEL3_COST;
+    div3.innerHTML = `
+      <div class="shop-item-top">
+        <span class="shop-item-icon">🎣</span>
+        <div class="shop-item-info">
+          <div class="shop-item-name">Rod Level 3</div>
+          <div class="shop-item-desc">20% chance to catch 2 fish using only 1 bait.</div>
+        </div>
+      </div>
+      <button class="upgrade-btn" id="buy-rod3" ${canAfford ? '' : 'disabled'}>Buy — $${ROD_LEVEL3_COST}</button>
+    `;
+  }
+  list.appendChild(div3);
+  const btn3 = document.getElementById('buy-rod3');
+  if (btn3) btn3.onclick = buyRodLevel3;
 }
 
 function buyRodLevel2() {
@@ -1800,6 +1869,16 @@ function buyRodLevel2() {
   renderRodsScreen();
 }
 
+function buyRodLevel3() {
+  if (state.rodLevel < 2 || state.rodLevel >= 3) return;
+  if (state.gold < ROD_LEVEL3_COST) return;
+  state.gold -= ROD_LEVEL3_COST;
+  state.rodLevel = 3;
+  saveGame();
+  updateAllUI();
+  renderRodsScreen();
+}
+
 // ════════════════════════════════════════
 //  REELS SCREEN RENDER + PURCHASE
 // ════════════════════════════════════════
@@ -1807,11 +1886,11 @@ function renderReelsScreen() {
   const list = document.getElementById('reels-list');
   list.innerHTML = '';
 
-  const div = document.createElement('div');
-  div.className = 'shop-item';
-
+  // Reel Level 2 card
+  const div2 = document.createElement('div');
+  div2.className = 'shop-item';
   if (state.reelLevel >= 2) {
-    div.innerHTML = `
+    div2.innerHTML = `
       <div class="shop-item-top">
         <span class="shop-item-icon">🌀</span>
         <div class="shop-item-info">
@@ -1821,10 +1900,9 @@ function renderReelsScreen() {
       </div>
       <div class="upgrade-owned">✅ Owned</div>
     `;
-    list.appendChild(div);
   } else {
     const canAfford = state.gold >= REEL_LEVEL2_COST;
-    div.innerHTML = `
+    div2.innerHTML = `
       <div class="shop-item-top">
         <span class="shop-item-icon">🌀</span>
         <div class="shop-item-info">
@@ -1834,9 +1912,51 @@ function renderReelsScreen() {
       </div>
       <button class="upgrade-btn" id="buy-reel2" ${canAfford ? '' : 'disabled'}>Buy — $${REEL_LEVEL2_COST}</button>
     `;
-    list.appendChild(div);
-    document.getElementById('buy-reel2').onclick = buyReelLevel2;
   }
+  list.appendChild(div2);
+  const btn2 = document.getElementById('buy-reel2');
+  if (btn2) btn2.onclick = buyReelLevel2;
+
+  // Reel Level 3 card
+  const div3 = document.createElement('div');
+  div3.className = 'shop-item';
+  if (state.reelLevel >= 3) {
+    div3.innerHTML = `
+      <div class="shop-item-top">
+        <span class="shop-item-icon">🌀</span>
+        <div class="shop-item-info">
+          <div class="shop-item-name">Reel Level 3</div>
+          <div class="shop-item-desc">Cuts your casting time to 2 seconds total.</div>
+        </div>
+      </div>
+      <div class="upgrade-owned">✅ Owned</div>
+    `;
+  } else if (state.reelLevel < 2) {
+    div3.innerHTML = `
+      <div class="shop-item-top">
+        <span class="shop-item-icon">🔒</span>
+        <div class="shop-item-info">
+          <div class="shop-item-name">Reel Level 3</div>
+          <div class="shop-item-desc">Requires Reel Level 2 first.</div>
+        </div>
+      </div>
+    `;
+  } else {
+    const canAfford = state.gold >= REEL_LEVEL3_COST;
+    div3.innerHTML = `
+      <div class="shop-item-top">
+        <span class="shop-item-icon">🌀</span>
+        <div class="shop-item-info">
+          <div class="shop-item-name">Reel Level 3</div>
+          <div class="shop-item-desc">Cuts your casting time to 2 seconds total.</div>
+        </div>
+      </div>
+      <button class="upgrade-btn" id="buy-reel3" ${canAfford ? '' : 'disabled'}>Buy — $${REEL_LEVEL3_COST}</button>
+    `;
+  }
+  list.appendChild(div3);
+  const btn3 = document.getElementById('buy-reel3');
+  if (btn3) btn3.onclick = buyReelLevel3;
 }
 
 function buyReelLevel2() {
@@ -1848,6 +1968,17 @@ function buyReelLevel2() {
   updateAllUI();
   renderReelsScreen();
 }
+
+function buyReelLevel3() {
+  if (state.reelLevel < 2 || state.reelLevel >= 3) return;
+  if (state.gold < REEL_LEVEL3_COST) return;
+  state.gold -= REEL_LEVEL3_COST;
+  state.reelLevel = 3;
+  saveGame();
+  updateAllUI();
+  renderReelsScreen();
+}
+
 
 // ════════════════════════════════════════
 //  TRAVEL / LOCATIONS
